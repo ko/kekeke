@@ -1,0 +1,26 @@
+{{ template "chrome/header.html" . }}
+
+<!-- sidebar in here -->
+{{ template "chrome/subheader.html" . }}
+
+<!-- main -->
+<div id="content">
+    <div id="main_title">
+        {{ .Title }} 
+   </div>
+
+    <section id="main">
+    <div>
+        {{ range first 10 .Data.Pages }}
+            {{ if or (eq .Section "project") (eq .Section "post") }}
+                {{ .Render "summary" }}
+                <br>
+            {{ end }}
+        {{ end }}
+    </div>
+    </section>
+
+
+
+{{ template "chrome/footer.html" }}
+
