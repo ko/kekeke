@@ -7,7 +7,46 @@
     </head>
     <body>
         textbox.
-        <input type="text" ng-model="texthere" />
-        <h1 ng-show="texthere">text: {{ texthere }}</h1>
+
+        <div id='dv1'>
+            <form ng-controller="FrmController">
+                <h1 ng-show="texthere">text: {{ texthere }}</h1>
+                <input type="text" ng-model="texthere" />
+                <p ng-repeat="msg in msgs">{{ msg }}</p>
+                <button ng-click='Click();'>Click</button>
+            </form>
+        </div>
+
+        <script type="text/javascript">
+            function FrmController($scope, $http) {
+                $scope.errors = [];
+                $scope.msgs = [];
+
+                $scope.Click = function() {
+                    $scope.errors.splice(0, $scope.errors.length);
+                    $scope.msgs.splice(0, $scope.msgs.length);
+
+                    var protocol = 'file:/';
+                    var path = protocol + document.location.href;
+                    var dir = path.substring(path.indexOf('/',1)+1, 
+                                             path.lastIndexOf('/'));
+                    path = dir + '/post_process.php';
+                    console.log(path);
+                    $http.post(path,
+                            { 'key1': $scope.texthere }
+                    ).success(function(data, status, headers, config) {
+                        console.log(data);
+                        if (data.msg != '') {
+                            $scope.msgs.push(data.msg);
+                        } else {
+                            $scope.errors.push(data.error);
+                        }
+                    }).error(function(data, status) {
+                        console.log('error');
+                        $scope.errors.push(status);
+                    });
+                }
+            }
+        </script>
     </body>
 </html>
